@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/eb9b97dba1.js" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        svg rect {
+            fill: orange;
+        }
+
+        svg text {
+            fill:white;
+            font: 10px sans-serif;
+            text-anchor: end;
+        }
+        table {
+            width: 100%;
+            font: 2vw sans-serif;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+        <div id="header">
+            <h4 style="font-size:10vw" class="get_class">GET request</h4>
+            <form id="new_get">
+                <i style="font-size:10vw" class="fas fa-book"></i>
+                <label style="font-size:10vw">ID:</label>
+                <input style="font-size:10vw" type="text" class="get_input" name="q" size="15" maxlength="120"
+                       id = "get_book_id">
+                <input style="font-size:10vw" type="button" value="GET" class="get_book">
+                <br>
+                <i style="font-size:10vw" class="fas fa-book"></i>
+                <label style="font-size:10vw">K:</label>
+                <input style="font-size:10vw" type="text" class="get_input" name="q" size="15" maxlength="120"
+                       id = "get_book_k">
+                <input style="font-size:10vw" type="button" value="GET" class="get_book_rank">
+                <br>
+                <i style="font-size:10vw" class="fas fa-user-alt"></i>
+                <label style="font-size:10vw">ID:</label>
+                <input style="font-size:10vw" type="text" class="get_input" name="q" size="15" maxlength="120"
+                       id = "get_auth_id">
+                <input style="font-size:10vw" type="button" value="GET" class="get_auth">
+                <br>
+                <i style="font-size:10vw" class="fas fa-user-alt"></i>
+                <label style="font-size:10vw">K:</label>
+                <input style="font-size:10vw" type="text" class="get_input" name="q" size="15" maxlength="120"
+                       id = "get_auth_k">
+                <input style="font-size:10vw" type="button" value="GET" class="get_auth_rank">
+                <br>
+                <i style="font-size:10vw" class="fas fa-crosshairs"></i>
+                 <label style="font-size:10vw">Query:</label>
+                <input style="font-size:10vw" type="text" class="get_input" name="q" size="15" maxlength="120"
+                       id = "get_search_q">
+                <input style="font-size:10vw" type="button" value="GET" class="get_search">
+            </form>
+            <p id="book" style="font-size:10vw" class="rank_output"></p>
+
+            <h4 style="font-size:10vw" class="put_class">PUT request</h4>
+            <form id="new_put">
+                <i style="font-size:10vw" class="fas fa-book"></i>
+                <label style="font-size:10vw">ID:</label>
+                <input style="font-size:10vw" type="text" class="put_input" name="q" size="15" maxlength="120"
+                       id = "put_book_id">
+                <br>
+                <i style="font-size:10vw" class="fas fa-file"></i>
+                <label style="font-size:10vw">Json File:</label>
+                <input style="font-size:10vw" type="text" class="put_json" name="q" size="50" maxlength="100000"
+                       id = "put_book_json">
+                <input style="font-size:10vw" type="button" value="PUT" class="put_book">
+                <br>
+                <i style="font-size:10vw" class="fas fa-user-alt"></i>
+                <label style="font-size:10vw">ID:</label>
+                <input style="font-size:10vw" type="text" class="put_input" name="q" size="15" maxlength="120"
+                       id = "put_auth_id">
+                <br>
+                <i style="font-size:10vw" class="fas fa-file"></i>
+                <label style="font-size:10vw">Json File:</label>
+                <input style="font-size:10vw" type="text" class="put_json" name="q" size="50" maxlength="100000"
+                       id = "put_auth_json">
+                <input style="font-size:10vw" type="button" value="PUT" class="put_auth">
+            </form>
+            <p style="font-size:10vw" class="put_output"></p>
+
+            <h4 style="font-size:10vw" class="post_class">POST request</h4>
+            <form style="font-size:10vw" id="new_post">
+                <i class="fas fa-book"></i>
+                <label>Json File:</label>
+                <input type="text" class="post_json" name="q" style="width:500px; height:300px;" maxlength="100000"
+                       id = "post_book_json">
+                <input type="button" value="POST" class="post_book">
+                <br>
+                <i class="fas fa-user-alt"></i>
+                <label>Json File:</label>
+                <input type="text" class="post_json" name="q" style="width:500px; height:300px;" maxlength="100000"
+                       id = "post_auth_json">
+                <input type="button" value="POST" class="post_auth">
+                <br>
+                <i class="fas fa-swatchbook"></i>
+                <label>Json File:</label>
+                <input style="font-size:10vw" type="text" class="post_json" name="q" style="width:500px; height:300px;"
+                       maxlength="100000"
+                       id = "post_books_json">
+                <input style="font-size:10vw" type="button" value="POST" class="post_books">
+                <br>
+                <i class="fas fa-users"></i>
+                <label>Json File:</label>
+                <input style="font-size:10vw" type="text" class="post_json" name="q" style="width:500px; height:300px;"
+                       maxlength="100000"
+                       id = "post_auths_json">
+                <input style="font-size:10vw" type="button" value="POST" class="post_auths">
+            </form>
+            <p style="font-size:10vw" class="post_output"></p>
+
+            <h4 style="font-size:10vw" class="delete_class">DELETE request</h4>
+            <form style="font-size:10vw" id="new_delete">
+                <i class="fas fa-book"></i>
+                <label>ID:</label>
+                <input style="font-size:10vw" type="text" class="delete_input" name="q" size="15" maxlength="120"
+                       id = "del_book_id">
+                <input style="font-size:10vw" type="button" value="DELETE" class="delete_book">
+                <br>
+                <i class="fas fa-user-alt"></i>
+                <label>ID:</label>
+                <input style="font-size:10vw" type="text" class="delete_input" name="q" size="15" maxlength="120"
+                       id = "del_auth_id">
+                <input style="font-size:10vw" type="button" value="DELETE" class="delete_auth">
+            </form>
+            <p style="font-size:10vw" class="delete_output"></p>
+
+            <table style="width:100%" class="get_table"></table>
+        </div>
+<script>
+
+function get_request(get_url)
+{
+    $.ajax({
+        type: "GET",
+        url: get_url,
+        success: function(data)
+        {
+            let table_content = "<thead>\n" +
+                "    <tr>\n" +
+                "      <th scope=\"col\"></th>\n" +
+                "      <th scope=\"col\"></th>\n" +
+                "    </tr>\n" +
+                "  </thead>" +
+                "<tbody>"
+            for (let [key, value] of Object.entries(data)) {
+                if (Array.isArray(value)) {
+                    value = value.join("<br>")
+                }
+                table_content += "<tr>\n" +
+                "      <td>" + key + "</td>\n" +
+                "      <td>" + value + "</td>\n" +
+                "    </tr>"
+            }
+            table_content += "</tbody>"
+            $('.get_table').html(table_content);
+        },
+        error: function(err)
+        {
+            let tbody = $('.get_table');
+            tbody.empty();
+            tbody.append('<tr><td colspan="4" class="text-danger">Failed to load data</td></tr>')
+        }
+    });
+}
+
+function get_rank(rank_url, item_key) {
+    $.ajax({
+        type: "GET",
+        url: rank_url,
+        success: function (data) {
+            let width = 5000;
+            let height = 500;
+
+            let the_data = [];
+            let titles = [];
+            for (let i = 0; i < data.length; i++) {
+                let item = data[i];
+                for (let [key, value] of Object.entries(item)) {
+                    if (key === "rating") {
+                        the_data.push(value);
+                    }
+                    if (key === item_key) {
+                        titles.push(value);
+                    }
+                }
+            }
+            let colors = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837',
+                '#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
+
+            let svg = d3.select("body")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            let g = svg.selectAll("g")
+                .data(the_data)
+                .enter()
+                .append("g")
+                .attr("transform", function (d, i) {
+                    return "translate(0,0)";
+                })
+
+            g.append("circle")
+                .attr("cx", function (d, i) {
+                    return i * 250 + 100;
+                })
+                .attr("cy", function (d, i) {
+                    return 100;
+                })
+                .attr("r", function (d) {
+                    return d * 20;
+                })
+                .attr("fill", function (d, i) {
+                    return colors[i];
+                })
+
+            g.append("text")
+                .attr("x", function (d, i) {
+                    return i * 280 + 150;
+                })
+                .attr("y", 105)
+                .attr("stroke", "teal")
+                .attr("font-size", "12px")
+                .attr("font-family", "sans-serif")
+                .text(function (d, i) {
+                    return titles[i] + "  " + d;
+                });
+        }
+    });
+}
+function put_request(put_url, put_json){
+     $.ajax({
+        type: "PUT",
+        url: put_url,
+        data: put_json,
+        success: function(data)
+        {
+            $('.put_output').text(data).css('color', 'red');
+        },
+        error: function(err)
+        {
+            let tbody = $('.put_output');
+            tbody.empty();
+            tbody.append('<tr><td colspan="4" class="text-danger">Failed to load data</td></tr>')
+        }
+    });
+}
+function post_request(post_url, post_json){
+     $.ajax({
+        type: "POST",
+        url: post_url,
+        data: post_json,
+        success: function(data)
+        {
+            $('.post_output').text(data).css('color', 'red');
+        },
+        error: function(err)
+        {
+            let tbody = $('.post_output');
+            tbody.empty();
+            tbody.append('<tr><td colspan="4" class="text-danger">Failed to load data</td></tr>')
+        }
+    });
+}
+function del_request(del_url){
+     $.ajax({
+        type: "DELETE",
+        url: del_url,
+        success: function(data)
+        {
+            $('.delete_output').text(data).css('color', 'red');
+        },
+        error: function(err)
+        {
+            let tbody = $('.delete_output');
+            tbody.empty();
+            tbody.append('<tr><td colspan="4" class="text-danger">Failed to load data</td></tr>')
+        }
+    });
+}
+
+$('.get_book').on('click', function(){
+     get_request("/api/book?id=" + $("#get_book_id").val());
+});
+$('.get_book_rank').on('click', function(){
+     get_rank('/vis/top-books?k=' + $("#get_book_k").val(), "book_title");
+});
+$('.get_auth_rank').on('click', function(){
+     get_rank('/vis/top-authors?k=' + $("#get_auth_k").val(), "author_name");
+});
+$('.get_auth').on('click', function(){
+     get_request("/api/author?id=" + $("#get_auth_id").val());
+});
+$('.get_search').on('click', function(){
+     get_request("/api/search?q=" + $("#get_search_q").val());
+});
+$('.put_book').on('click', function(){
+     put_request("/api/book?id=" + $("#put_book_id").val(), $("#put_book_json").val());
+});
+$('.put_auth').on('click', function(){
+     put_request("/api/author?id=" + $("#put_auth_id").val(), $("#put_auth_json").val());
+});
+$('.post_book').on('click', function(){
+     post_request("/api/book", $("#post_book_json").val());
+});
+$('.post_books').on('click', function(){
+     post_request("/api/books", $("#post_books_json").val());
+});
+$('.post_auth').on('click', function(){
+     post_request("/api/author", $("#post_auth_json").val());
+});
+$('.post_auths').on('click', function(){
+     post_request("/api/authors", $("#post_auths_json").val());
+});
+$('.delete_book').on('click', function(){
+     del_request("/api/book?id=" + $("#del_book_id").val());
+});
+$('.delete_auth').on('click', function(){
+     del_request("/api/author?id=" + $("#del_auth_id").val());
+});
+</script>
+</body>
+</html>
